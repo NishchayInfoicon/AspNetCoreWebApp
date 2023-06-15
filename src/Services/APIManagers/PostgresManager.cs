@@ -1,35 +1,87 @@
 ﻿using Npgsql;
 using Practice.Foundation.Infrastructure.Responses;
 using Practice.Services.APIManagers.Records;
+using System.Xml.Linq;
 
 namespace Practice.Services.APIManagers
 {
     public class PostgresManager
     {
+        public static string DBName = "Practice";
         private NpgsqlConnection connection;
         public NpgsqlCommand postgresClient;
 
+        #region Validation based operations
+
+        public void CreateDatabase(string dbName)
+        {
+            if (!IsDatabaseExist(dbName))
+            {
+                CreateClient();
+                postgresClient.CommandText = $"CREATE DATABASE IF NOT EXISTS {dbName}";
+                postgresClient.ExecuteNonQuery();
+            }
+        }
+
+        public bool IsDatabaseExist(string dbName)
+        {
+            bool dbExists = false;
+            CreateClient();
+            postgresClient.CommandText = $"Select 1 FROM pg_database Where datname='{dbName}'";
+            dbExists = postgresClient.ExecuteScalar() != null;
+            return dbExists;
+        }
+
+        public bool IsTableExists(string tableName)
+        {
+            bool tableExists = false;
+            CreateClient();
+            postgresClient.CommandText = $"SELECT EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename  = '{tableName}');";
+            var dbresponse = postgresClient.ExecuteScalar();
+            if (dbresponse != null && dbresponse.GetType().Name.ToLower() == "boolean" && dbresponse.ToString().ToLower() == "true")
+            {
+                tableExists = true;
+            }
+            return tableExists;
+        }
+
+        #endregion
+
+        #region Database and table operations
+
+
+
+        #endregion
+
         #region Schema Operations
 
-        public ResponseStatus CreateTable(string tableName, Dictionary<string, string> columns)
+        public ResponseStatus CreateTable(string tableName, Dictionary<string, string> columns, string dbName = null)
         {
             ResponseStatus response = new ResponseStatus();
             CreateClient();
-            var createTableSql = $"CREATE TABLE {tableName} (";
-
-            // Add each column with its respective data type to the SQL statement
-            foreach (var column in columns)
+            if (string.IsNullOrEmpty(dbName))
             {
-                createTableSql += $"{column.Key} {column.Value.ToString().ToUpper()}, ";
+                dbName = DBName;
             }
+            CreateDatabase(dbName);
+            if (!IsTableExists(tableName))
+            {
+                var createTableSql = $"CREATE TABLE {tableName} (";
 
-            createTableSql = createTableSql.TrimEnd(',', ' '); // Remove trailing comma and space
+                // Add each column with its respective data type to the SQL statement
+                foreach (var column in columns)
+                {
+                    createTableSql += $"{column.Key} {column.Value.ToString().ToUpper()}, ";
+                }
 
-            createTableSql += ")";
-            postgresClient.CommandText = createTableSql;
-            postgresClient.ExecuteNonQuery();
-            response.IsSuccess = true;
-            response.Message = $"Table {tableName} successfully created";
+                createTableSql = createTableSql.TrimEnd(',', ' '); // Remove trailing comma and space
+
+                createTableSql += ")";
+                postgresClient.CommandText = createTableSql;
+                postgresClient.ExecuteNonQuery();
+                response.IsSuccess = true;
+                response.Message = $"Table {tableName} successfully created";
+            }
             return response;
         }
 

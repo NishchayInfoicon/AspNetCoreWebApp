@@ -36,11 +36,25 @@ namespace Practice.Services.API.Controllers
 
         [HttpPost]
         [Route("upsertcustomer")]
-        public ResponseStatus UpsertCustomer([FromBody]Customer customer)
+        public ResponseStatus UpsertCustomer([FromBody] Customer customer)
         {
             ResponseStatus response = new ResponseStatus();
             response = _postgresManager.UpsertRecord<Customer>(customer);
             return response;
+        }
+
+        [HttpGet]
+        [Route("isdbexists")]
+        public bool IsDBExists(string dbName)
+        {
+            return _postgresManager.IsDatabaseExist(dbName);
+        }
+
+        [HttpGet]
+        [Route("istableexists")]
+        public bool IsTableExists(string tablename)
+        {
+            return _postgresManager.IsTableExists(tablename);
         }
     }
 }

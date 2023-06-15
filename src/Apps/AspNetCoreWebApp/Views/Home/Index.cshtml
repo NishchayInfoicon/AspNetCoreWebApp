@@ -1,8 +1,32 @@
-﻿@{
+﻿@using Practice.Foundation.Infrastructure.Types;
+@model List<BaseItem>
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Successfull
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var obj in Model)
+        {
+            <tr>
+                <td>
+                    @obj.GetLanguageField("name")
+                </td>
+                <td>
+                    @obj.GetLanguageField("Successfull")
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
