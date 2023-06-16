@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Certificate;
 using Npgsql.PostgresTypes;
 using Practice.Services.APIManagers;
 
@@ -10,6 +11,9 @@ builder.Services.AddSingleton<PostgresManager>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAuthentication(
+        CertificateAuthenticationDefaults.AuthenticationScheme)
+    .AddCertificate();
 
 var app = builder.Build();
 

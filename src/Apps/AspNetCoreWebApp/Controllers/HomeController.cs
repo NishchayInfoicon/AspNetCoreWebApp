@@ -1,5 +1,6 @@
 ﻿using AspNetCoreWebApp.Models;
 using Microsoft.AspNetCore.Mvc;
+using Practice.Client.Services.ClientManagers.Managers;
 using Practice.Foundation.Infrastructure.Types;
 using System.Diagnostics;
 
@@ -8,10 +9,11 @@ namespace AspNetCoreWebApp.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly PostgresRepository _postgresRepository;
+        public HomeController(ILogger<HomeController> logger,PostgresRepository postgresRepository)
         {
             _logger = logger;
+            _postgresRepository = postgresRepository;
         }
 
         public IActionResult Index()

@@ -1,8 +1,15 @@
+using Microsoft.AspNetCore.Authentication.Certificate;
+using Practice.Client.Services.ClientManagers.Managers;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddScoped<PostgresRepository>();
+builder.Services.AddHttpClient();
+builder.Services.AddAuthentication(
+        CertificateAuthenticationDefaults.AuthenticationScheme)
+    .AddCertificate();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

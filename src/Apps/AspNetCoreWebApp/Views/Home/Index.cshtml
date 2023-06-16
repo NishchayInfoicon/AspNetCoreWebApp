@@ -1,10 +1,11 @@
-﻿@using Practice.Foundation.Infrastructure.Types;
+﻿@using Practice.Client.Services.ClientManagers.Managers;
+@using Practice.Foundation.Infrastructure.Types;
 @model List<BaseItem>
-
+@inject PostgresRepository _postgresRepository
 @{
     ViewData["Title"] = "Home Page";
 }
-
+<button onclick="@_postgresRepository.UpsertRecord("customer")"></button>
 <table class="table table-bordered table-striped">
     <thead>
         <tr>

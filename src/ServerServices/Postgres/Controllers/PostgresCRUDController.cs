@@ -13,9 +13,8 @@ namespace Practice.Services.API.Controllers
         private readonly ILogger<PostgresCRUDController> _logger;
         private readonly PostgresManager _postgresManager;
 
-        public PostgresCRUDController(PostgresManager postgresManager, ILogger<PostgresCRUDController> logger)
+        public PostgresCRUDController(PostgresManager postgresManager)
         {
-            _logger = logger;
             _postgresManager = postgresManager;
         }
 
