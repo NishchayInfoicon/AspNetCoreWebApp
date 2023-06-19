@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Practice.Foundation.Infrastructure.Responses;
 using Practice.Services.APIManagers;
 using Practice.Services.APIManagers.Records;
+using System.Data;
 
 namespace Practice.Services.API.Controllers
 {
@@ -42,6 +43,12 @@ namespace Practice.Services.API.Controllers
             return response;
         }
 
+        [HttpGet]
+        [Route("gettabledata")]
+        public List<Customer> Read(string tablename)
+        {
+            return _postgresManager.ReadDataFromTable<Customer>(tablename);
+        }
         [HttpGet]
         [Route("isdbexists")]
         public bool IsDBExists(string dbName)

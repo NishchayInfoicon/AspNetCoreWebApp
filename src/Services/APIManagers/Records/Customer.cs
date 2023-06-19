@@ -11,42 +11,42 @@ namespace Practice.Services.APIManagers.Records
     public class Customer
     {
         [JsonPropertyName("first_name")]
-        public string FirstName { get; set; }
+        public string first_name { get; set; }
 
         [JsonPropertyName("last_name")]
-        public string LastName { get; set; }
+        public string last_name { get; set; }
 
         [JsonPropertyName("email")]
-        public string Email { get; set; }
+        public string email { get; set; }
 
         [JsonPropertyName("company")]
-        public string Company { get; set; }
+        public string company { get; set; }
 
         [JsonPropertyName("street")]
-        public string Street { get; set; }
+        public string street { get; set; }
 
         [JsonPropertyName("city")]
-        public string City { get; set; }
+        public string city { get; set; }
 
-        [JsonPropertyName("State")]
-        public string State { get; set; }
+        [JsonPropertyName("state")]
+        public string state { get; set; }
 
         [JsonPropertyName("zip")]
-        public int Zip { get; set; }
+        public int zip { get; set; }
 
         [JsonPropertyName("phone")]
-        public string Phone { get; set; }
+        public string phone { get; set; }
 
         [JsonPropertyName("birth_date")]
-        public DateTime? BirthDate { get; set; }
+        public DateTime birth_date { get; set; }
 
         [JsonPropertyName("gender")]
-        public char Gender { get; set; }
+        public char gender { get; set; }
 
         [JsonPropertyName("date_entered")]
-        public DateTime DateEntered { get; set; }
+        public DateTime date_entered { get; set; }
 
         [JsonPropertyName("id")]
-        public int Id { get; set; } 
+        public int id { get; set; } 
     }
 }

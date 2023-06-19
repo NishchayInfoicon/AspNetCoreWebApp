@@ -1,11 +1,15 @@
-﻿using Npgsql;
+﻿using Nest;
+using Npgsql;
+using Practice.Foundation.Infrastructure.Interfaces;
 using Practice.Foundation.Infrastructure.Responses;
 using Practice.Services.APIManagers.Records;
+using System.Data;
+using System.Reflection;
 using System.Xml.Linq;
 
 namespace Practice.Services.APIManagers
 {
-    public class PostgresManager
+    public class PostgresManager : IPostgresManager
     {
         public static string DBName = "Practice";
         private NpgsqlConnection connection;
@@ -85,6 +89,7 @@ namespace Practice.Services.APIManagers
             return response;
         }
 
+
         public ResponseStatus UpsertRecord<T>(T record) where T : new()
         {
             CreateClient();
@@ -104,8 +109,39 @@ namespace Practice.Services.APIManagers
             postgresClient.Parameters.Clear();
             response.IsSuccess = true;
             response.Message = $"{nameof(Customer)} Data added successfully";
-
             return response;
+        }
+
+        public List<T> ReadDataFromTable<T>(string tablename) where T : class, new()
+        {
+            CreateClient();
+            List<T> result = new List<T>();
+
+            using (NpgsqlCommand command = new NpgsqlCommand($"SELECT * FROM {tablename}", postgresClient.Connection))
+            {
+                using (NpgsqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        T instance = new T();
+
+                        for (int i = 0; i < reader.FieldCount; i++)
+                        {
+                            string columnName = reader.GetName(i);
+                            PropertyInfo property = typeof(T).GetProperty(columnName);
+                            if (property != null && reader[columnName] != DBNull.Value)
+                            {
+                                object value = reader[columnName];
+                                property.SetValue(instance, Convert.ChangeType(value, property.PropertyType));
+                            }
+                        }
+
+                        result.Add(instance);
+                    }
+                }
+            }
+
+            return result;
         }
 
         #endregion
@@ -147,7 +183,7 @@ namespace Practice.Services.APIManagers
 
         #region Helpers
 
-        public NpgsqlCommand CreateClient()
+        private NpgsqlCommand CreateClient()
         {
             if (connection == null || connection.State != System.Data.ConnectionState.Open)
             {
@@ -164,13 +200,13 @@ namespace Practice.Services.APIManagers
             return postgresClient;
         }
 
-        public void OpenConnnection()
+        private void OpenConnnection()
         {
             connection = new NpgsqlConnection("User ID =postgres;Password=Lostman@123;Server=localhost;Port=5432;Database=Practice; Integrated Security=true;Pooling=true;");
             connection.Open();
         }
 
-        public void CloseConnection()
+        private void CloseConnection()
         {
             connection.Close();
         }
