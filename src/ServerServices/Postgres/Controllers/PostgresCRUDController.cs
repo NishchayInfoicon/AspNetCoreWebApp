@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Practice.Foundation.Infrastructure.Interfaces;
 using Practice.Foundation.Infrastructure.Responses;
 using Practice.Services.APIManagers;
 using Practice.Services.APIManagers.Records;
@@ -12,9 +13,9 @@ namespace Practice.Services.API.Controllers
     {
 
         private readonly ILogger<PostgresCRUDController> _logger;
-        private readonly PostgresManager _postgresManager;
+        private readonly IPostgresManager _postgresManager;
 
-        public PostgresCRUDController(PostgresManager postgresManager)
+        public PostgresCRUDController(IPostgresManager postgresManager)
         {
             _postgresManager = postgresManager;
         }
@@ -41,6 +42,13 @@ namespace Practice.Services.API.Controllers
             ResponseStatus response = new ResponseStatus();
             response = _postgresManager.UpsertRecord<Customer>(customer);
             return response;
+        }
+
+        [HttpDelete]
+        [Route("deletecustomerbyid")]
+        public ResponseStatus DeleteCustomerById(string tableName, int id)
+        {
+            return _postgresManager.DeleteIdByRow(tableName, id);
         }
 
         [HttpGet]

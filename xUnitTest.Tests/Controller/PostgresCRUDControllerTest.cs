@@ -1,5 +1,4 @@
-﻿using Moq;
-using Practice.Foundation.Infrastructure.Interfaces;
+﻿using Practice.Foundation.Infrastructure.Interfaces;
 using Practice.Services.API.Controllers;
 using Practice.Services.APIManagers.Records;
 using xUnitTest.Tests.ServicesMoq;
@@ -22,6 +21,59 @@ namespace xUnitTest.Tests.Controller
         }
 
         [Fact]
+        public void UpsertRecord()
+        {
+            // Arrange
+            string responseMessage = "Customer Data added successfully";
+
+            //Act
+            IPostgresManager postgresManager = new MoqPostgresManager();
+
+            PostgresCRUDController controller = new PostgresCRUDController(postgresManager);
+
+            Customer customer = new Customer
+            {
+                first_name = "Nishu",
+                last_name = "Tanwar",
+                email = "nishuchauhan1@gmail.com",
+                company = "Infoicon Technologies Pvt. Ltd.",
+                street = "Bank wali gali",
+                city = "New Delhi",
+                state = "Delhi",
+                zip = 110036,
+                phone = "8861099544",
+                birth_date = DateTime.UtcNow,
+                gender = 'M',
+                date_entered = DateTime.UtcNow,
+                id = 1
+            };
+            var response = controller.UpsertCustomer(customer);
+
+            //Assert
+            Assert.NotNull(response);
+            Assert.Equal(responseMessage, response.Message);
+            Assert.True(response.IsSuccess);
+        }
+
+        [Fact]
+        public void DeleteData()
+        {
+            // Arrange
+            string responseMessage = "Deleted 1 row(s).";
+
+            //Act
+            IPostgresManager postgresManager = new MoqPostgresManager();
+
+            PostgresCRUDController controller = new PostgresCRUDController(postgresManager);
+            var response = controller.DeleteCustomerById("customer", 1);
+
+            //Assert
+            Assert.NotNull(response);
+            Assert.Equal(responseMessage, response.Message);
+            Assert.True(response.IsSuccess);
+        }
+
+        [Fact]
         public void ReadDataFromTable_ReturnsListOfItems()
         {
             // Arrange
@@ -29,9 +81,9 @@ namespace xUnitTest.Tests.Controller
 
             // Create an instance of the class that contains the ReadDataFromTable metho
             IPostgresManager postgresManager = new MoqPostgresManager();
-
+            PostgresCRUDController controller = new PostgresCRUDController(postgresManager);
             // Act
-            var result = postgresManager.ReadDataFromTable<Customer>(tablename);
+            var result = controller.Read(tablename);
 
             // Assert
             Assert.NotNull(result);

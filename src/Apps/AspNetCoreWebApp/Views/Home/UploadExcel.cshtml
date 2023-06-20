@@ -1,0 +1,43 @@
+﻿@using Practice.Foundation.Infrastructure.DemoTypes;
+@model ExcelData
+
+@{
+    ViewData["Title"] = "UploadExcel";
+}
+<a href="@Url.Action("Privacy", "Home")" class="btn btn-primary">Go To Uploader</a>
+@if (Model.Columns.Any())
+{
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                @foreach (var column in Model.Columns)
+                {
+                    <th>
+                        @column
+                    </th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Data.Values.First().Count; i++)
+            {
+                <tr>
+                    @foreach (var column in Model.Data.Keys)
+                    {
+                        <td>
+                            @Model.Data[column][i]
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+    <form method="post" action="@Url.Action("ExportToExcel")">
+        <input type="hidden" name="Columns" value="@string.Join(",", Model.Columns)" />
+        @foreach (var kvp in Model.Data)
+        {
+            <input type="hidden" name="Data[@kvp.Key]" value="@string.Join(",", kvp.Value)" />
+        }
+        <button type="submit" class="btn btn-primary">Export to Excel</button>
+    </form>
+}

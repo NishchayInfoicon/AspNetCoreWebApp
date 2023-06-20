@@ -16,7 +16,7 @@
         {
             try
             {
-                var response =await _httpClient.GetAsync("isdbexists?dbName=customer");
+                //var response =await _httpClient.GetAsync("isdbexists?dbName=customer");
             }
             catch (Exception ex)
             {

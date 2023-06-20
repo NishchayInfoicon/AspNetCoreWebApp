@@ -144,6 +144,25 @@ namespace Practice.Services.APIManagers
             return result;
         }
 
+        public ResponseStatus DeleteIdByRow(string tableName, int id)
+        {
+            ResponseStatus response = new ResponseStatus();
+            CreateClient();
+            postgresClient.CommandText = $"Delete from {tableName} Where id = @id";
+            postgresClient.Parameters.AddWithValue("id", id);
+
+            int rowsAffected = postgresClient.ExecuteNonQuery();
+            if (rowsAffected == 1)
+            {
+                response.IsSuccess = true;
+                response.Message = $"Deleted {rowsAffected} row(s).";
+                return response;
+            }
+            response.IsSuccess = false;
+            response.Message = $"Failed to delete for {id}";
+            return response;
+        }
+
         #endregion
 
         #region Query Modifiers

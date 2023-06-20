@@ -6,7 +6,7 @@ namespace Practice.Foundation.Infrastructure.Interfaces
     {
         public bool IsDatabaseExist(string dbName);
         public bool IsTableExists(string tableName);
-
+        public ResponseStatus DeleteIdByRow(string tableName, int id);
         public ResponseStatus CreateTable(string tableName, Dictionary<string, string> columns, string dbName = null);
         public ResponseStatus UpsertRecord<T>(T record) where T : new();
         public List<T> ReadDataFromTable<T>(string tablename) where T : class, new();

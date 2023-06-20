@@ -65,6 +65,7 @@ namespace xUnitTest.Tests.ServicesMoq
                     mockDataReader.Setup(m => m.GetOrdinal(property.Name)).Returns(Array.IndexOf(typeof(Customer).GetProperties(), property));
                     mockDataReader.Setup(m => m.GetValue(Array.IndexOf(typeof(Customer).GetProperties(), property))).Returns(value);
                 }
+                
             }
 
             return mockDataReader.Object;
@@ -98,7 +99,64 @@ namespace xUnitTest.Tests.ServicesMoq
 
         public ResponseStatus UpsertRecord<T>(T record) where T : new()
         {
-            throw new NotImplementedException();
+            ResponseStatus response = new ResponseStatus();
+            string sql = $"INSERT INTO customer ({GetColumnNames(record)}) VALUES ({GetColumnValues(record)})";
+            if (sql == "INSERT INTO customer (first_name, last_name, email, company, street, city, state, zip, phone, birth_date, gender, date_entered, id) VALUES (@first_name, @last_name, @email, @company, @street, @city, @state, @zip, @phone, @birth_date, @gender, @date_entered, @id)")
+            {
+                response.IsSuccess = true;
+                response.Message = $"{nameof(Customer)} Data added successfully";
+            }
+            response.IsSuccess = true;
+            response.Message = "Failed top add data successfully";
+            return response;
+        }
+        #region Query Modifiers
+
+        private string GetColumnNames<T>(T record) where T : new()
+        {
+            var columnNames = new List<string>();
+            foreach (var property in record.GetType().GetProperties())
+            {
+                var propertyName = property.CustomAttributes.ToList().Select(x => x.ConstructorArguments[0]).ToList().FirstOrDefault();
+                if (propertyName != null && !string.IsNullOrEmpty(propertyName.Value.ToString()))
+                {
+                    columnNames.Add(propertyName.Value.ToString());
+                }
+            }
+
+            return string.Join(", ", columnNames);
+        }
+
+        private string GetColumnValues<T>(T record) where T : new()
+        {
+            var columnValues = new List<string>();
+
+            foreach (var property in record.GetType().GetProperties())
+            {
+                var propertyName = property.CustomAttributes.ToList().Select(x => x.ConstructorArguments[0]).ToList().FirstOrDefault();
+                if (propertyName != null && !string.IsNullOrEmpty(propertyName.Value.ToString()))
+                {
+                    columnValues.Add($"@{propertyName.Value.ToString()}");
+                }
+            }
+
+            return string.Join(", ", columnValues);
+        }
+
+        #endregion
+
+        public ResponseStatus DeleteIdByRow(string tableName, int id)
+        {
+            ResponseStatus response = new ResponseStatus();
+            if (!string.IsNullOrEmpty(tableName))
+            {
+                response.IsSuccess = true;
+                response.Message = $"Deleted 1 row(s).";
+                return response;
+            }
+            response.IsSuccess = false;
+            response.Message = $"Failed to delete for {id}";
+            return response;
         }
     }
 }
