@@ -65,7 +65,7 @@ namespace xUnitTest.Tests.ServicesMoq
                     mockDataReader.Setup(m => m.GetOrdinal(property.Name)).Returns(Array.IndexOf(typeof(Customer).GetProperties(), property));
                     mockDataReader.Setup(m => m.GetValue(Array.IndexOf(typeof(Customer).GetProperties(), property))).Returns(value);
                 }
-                
+
             }
 
             return mockDataReader.Object;
@@ -105,6 +105,7 @@ namespace xUnitTest.Tests.ServicesMoq
             {
                 response.IsSuccess = true;
                 response.Message = $"{nameof(Customer)} Data added successfully";
+                return response;
             }
             response.IsSuccess = true;
             response.Message = "Failed top add data successfully";
